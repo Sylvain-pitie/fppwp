@@ -7,7 +7,6 @@ In order to use it you have to install phonopy:
       https://phonopy.github.io/phonopy/
 
 VASPkit:
-
     https://vaspkit.com/
 
 and Numpy:
