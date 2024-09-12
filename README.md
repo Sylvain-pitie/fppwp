@@ -6,7 +6,7 @@ This python script will allow you to generate plot of phonon in an automatic way
 In order to use it you have to install phonopy:
       https://phonopy.github.io/phonopy/
 
-VASkit:
+VASPkit:
 
     https://vaspkit.com/
 
