@@ -45,9 +45,11 @@ To use it, you to first make the calculation of the forces for the POSCAR files 
       done
 
 When the vasp calculations are done, you can use the fppwp script and you will obtain the tmp.pdf file.
-If you want to add title and change the ouptut here is an exemple:
+If you want to add title and change the ouptut name here is an exemple:
 
             fppwp -t 'I use fppwp' -o friendly_phonon.pdf
+If you want to write in italic some part of the title:
 
+            fppwp -t 'here is $italic$' -o italic_title.pdf
 Enjoy! :D
       
