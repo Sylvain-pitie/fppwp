@@ -51,5 +51,8 @@ If you want to add title and change the ouptut name here is an exemple:
 If you want to write in italic some part of the title:
 
             fppwp -t 'here is $italic$' -o italic_title.pdf
+If you want to write in subscript and exponent some part of the title:
+
+            fppwp -t 'Square$^{2}$ and index$_{10}$' -o sub_index.pdf
 Enjoy! :D
       
