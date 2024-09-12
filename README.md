@@ -45,6 +45,7 @@ To use it, you to first make the calculation of the forces for the POSCAR files 
       done
 
 When the vasp calculations are done, you can use the fppwp script and you will obtain the tmp.pdf file.
+<img src="/main/screen/phonon.png" width="128"/>
 If you want to add title and change the ouptut name here is an exemple:
 
             fppwp -t 'I use fppwp' -o friendly_phonon.pdf
