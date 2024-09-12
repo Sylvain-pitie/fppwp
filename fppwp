@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+import sys
+import re
+import os
+#from ase import io
+import numpy as np
+import argparse
+parser = argparse.ArgumentParser(prog='FPPwP1.0 (Friendly Plot Phonon with Phonopy')
+parser.add_argument("-t", "--title", type=str, default="", help="title of the figure, default nothing")
+parser.add_argument("-o", "--outputfile", type=str, default="tmp.pdf", help="name of the output, default tmp.pdf")
+args = parser.parse_args()
+
+os.system("phonopy -f force-*/vasprun.xml")
+os.system("vaspkit -task 303 -file POSCAR")
+os.system("rm -rf INCAR")
+avec = []
+bvec = []
+cvec = []
+name = []
+stop = "If"
+atom = []
+content = []
+with open("KPATH.in","r") as f:
+    for line in f:
+        if not line.strip():
+            continue
+        else:
+            content.append(line)
+            
+
+f.close()
+#print(content[0].split()[0])
+tmpB = ""
+for f in range(4,len(content)):
+    tmpA = content[f].split()
+    tmpn = str(content[f].split()[3])
+    if tmpn != tmpB:
+        avec.append(float(tmpA[0]))
+        bvec.append(float(tmpA[1]))
+        cvec.append(float(tmpA[2]))
+        name.append(str(tmpA[3]))
+        tmpB = tmpn
+print(name)
+for i in range(len(name)):
+    if name[i] == "GAMMA":
+        name[i] = "$\Gamma$"
+    if "SIGMA_0" in name[i]:
+        name[i] = "$\Sigma$"
+    if "_" in name[i]:
+        name[i] = "$"+name[i]+"$"
+    if "+" in name[i]:
+        name[i] = name[i].replace("+", "  ")
+    if "-" in name[i]:
+        name[i] = name[i].replace("-", "  ")
+print(name)
+with open("POSCAR","r") as f:
+    content = f.readlines()
+    tmpA = content[5].split()
+    for x in range(len(tmpA)):
+        atom.append(str(tmpA[x]))
+    f.close()
+with open("phonopy_disp.yaml","r") as f:
+    content = f.readlines()
+    dim = re.findall(r'\d+', content[6])
+print(dim)
+##print the result in the band.conf file##
+with open("band.conf","w") as f:
+#    read="FORCE_CONSTANTS = read\n"
+#    f.write(read)
+    atom_name="ATOM_NAME = "
+    for i in range(len(atom)):
+        atom_name = atom_name+atom[i]+" "
+    atom_name= atom_name+"\n"
+    f.write(atom_name)
+    dim_str = "DIM = "
+    for i in range(len(dim)):
+        dim_str = dim_str+str(dim[i])+" "
+    dim_str = dim_str+"\n"
+    f.write(dim_str)
+    band = "BAND = "
+    label = "BAND_LABELS = "
+    for i in range(len(name)):
+        band = band+str(avec[i])+" "+str(bvec[i])+" "+str(cvec[i])+" "
+        label = label+str(name[i])+" "
+    label = label+str(name[0])+" "
+    label = label+"\n"
+    band = band+str(avec[0])+" "+str(bvec[0])+" "+str(cvec[0])+" "
+    band = band+"\n"
+    f.write(band)
+    f.write(label)
+    f.close()
+os.system("phonopy -p -s band.conf")
+cmd = "phonopy-bandplot band.yaml --legacy --factor 33.356 --ylabel 'Frequency cm$^{-1}$' --xlabel 'K-Path' -t '"+args.title+"' -o "+args.outputfile
+#os.system("phonopy-bandplot band.yaml --legacy --factor 33.356 --ylabel 'Frequency cm$^{-1}$' --xlabel 'K-Path' -t 'test $I$4$_1$  40 GPa' -o test2.pdf")
+os.system(cmd)
